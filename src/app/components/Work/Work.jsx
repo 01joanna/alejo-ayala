@@ -1,10 +1,12 @@
 "use client"
 import React from 'react';
-import projects from '../data/data.jsx';
+import projects from '../../data/data.jsx';
 
 export default function Work() {
     return (
-        <section className="w-screen min-h-screen pt-40 grid grid-cols-1 md:grid-cols-2">
+        <section 
+        id='work'
+        className="w-screen min-h-screen pt-40 grid grid-cols-1 md:grid-cols-2">
             {projects.map((project, index) => (
                 <a
                     key={index}
