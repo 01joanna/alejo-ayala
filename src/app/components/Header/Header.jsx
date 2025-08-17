@@ -10,12 +10,12 @@ export default function Header() {
 
     return (
         <motion.header
-            initial={{ y: isHome ? 0 : 400, opacity: 0 }}
+            initial={{ y: isHome ? 0 : -50, opacity: 0 }}
             animate={{
                 y: isHome ? 0 : 0,
                 opacity: 1
             }}
-            transition={{ duration: 0.8, ease: "easeInOut" }}
+            transition={{ duration: 0.7, ease: "easeInOut" }}
             className={`
         ${isHome
                     ? "absolute top-0 left-0 w-full h-full flex justify-between items-center px-20 py-10"
