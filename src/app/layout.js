@@ -17,20 +17,32 @@ export default function RootLayout({ children }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleAboutClick = () => {
+    setShowAbout(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleHomeClick = () => {
+    setShowAbout(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <html lang="en">
       <body className="bg-black text-white overflow-x-hidden">
-        {/* Header siempre visible */}
-        <Header scrollY={scrollY} onAboutClick={() => setShowAbout(true)} />
+        <Header
+          scrollY={scrollY}
+          onAboutClick={handleAboutClick}
+          onHomeClick={handleHomeClick}
+          showAbout={showAbout}
+          isHome={pathname === '/'}
+        />
 
-        {/* Overlay About */}
+        {/* About */}
         <AnimatePresence>
-          {showAbout && (
-            <About setShowAbout={setShowAbout} />
-          )}
+          {showAbout && <About setShowAbout={setShowAbout} />}
         </AnimatePresence>
 
-        {/* Contenido principal */}
         <AnimatePresence mode="wait">
           <motion.div
             key={pathname}

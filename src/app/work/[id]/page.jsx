@@ -7,7 +7,14 @@ export default function Project() {
     const params = useParams();
     const project = projects.find((p) => p.id.toString() === params.id);
 
-    if (!project) return <p>Proyecto no encontrado</p>;
+    if (!project)
+        return (
+            <div className="w-screen h-screen flex justify-center items-center">
+                <p className="uppercase text-white text-xl">
+                    Proyecto no encontrado
+                </p>
+            </div>
+        );
 
     return (
         <section className="w-screen min-h-screen flex flex-col items-center justify-center pt-40 px-4 pb-20">

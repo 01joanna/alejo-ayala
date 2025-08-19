@@ -2,23 +2,31 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-export default function About({ setShowAbout }) {
+export default function About({ showAbout, setShowAbout }) {
     return (
         <motion.div
-            className="fixed inset-0 bg-black/90 text-white flex flex-col items-center justify-center px-10 z-50"
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            animate={{ opacity: 0.8 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.5 }}
+            className="fixed inset-0 z-20 flex items-center justify-center bg-black bg-opacity-90 text-white p-8"
         >
-            <div className="flex flex-col gap-10 pt-12">
-                <h1 className="w-[690px] h-[200px] pt-[11rem] font-extralight text-justify">
-                    Alejo Ayala es Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ex tempore hic repudiandae minus qui id sint voluptatem quidem saepe eaque. Excepturi ducimus repellendus fugiat dolor aliquam natus et non sint.</h1>
+            <div className="max-w-3xl text-center font-helveticaLight text-sm uppercase pt-30 ">
+                <div className="flex flex-col gap-12">
+                    <h2 className="text-justify font-helvetica">Alejo Ayala is Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eaque repudiandae quod aut doloremque. Adipisci voluptas odio magnam! Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis fugit deleniti earum, enim commodi accusamus amet nostrum eos adipisci cumque unde beatae reiciendis sint error ipsam nihil, eius ad doloremque?</h2>
+
+                    <div className="text-xs font-helveticaBold">
+                        <p>Instagram / @alejoayala</p>
+                        <p>Vimeo / @alejoayala</p>
+                        <p>Contact / alejoayala@email.com</p>
+
+                    </div>
+                </div>
                 <button
                     onClick={() => setShowAbout(false)}
-                    className="mt-10 px-6 py-2 hover:bg-white hover:text-black transition w- text-center items-center justify-center w-30"
+                    className="mt-8 px-6 py-3 tracking-widest hover:bg-white hover:text-black transition cursor-pointer uppercase "
                 >
-                    Cerrar
+                    X Close
                 </button>
             </div>
         </motion.div>

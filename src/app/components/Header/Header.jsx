@@ -1,59 +1,69 @@
 'use client';
 import React, { useEffect } from "react";
 import { motion, useAnimation } from "framer-motion";
-import { usePathname } from "next/navigation";
-import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
 
-export default function Header({ scrollY }) {
+export default function Header({ scrollY, onAboutClick, showAbout }) {
     const controls = useAnimation();
+    const router = useRouter();
     const pathname = usePathname();
 
+    const isHome = pathname === "/";
+
     useEffect(() => {
-        if (pathname === "/") {
-            if (scrollY > 10) {
-                controls.start({ top: 0, y: 0, transition: { duration: 0.5 } });
-            } else {
-                controls.start({ top: "50%", y: "-50%", transition: { duration: 0.5 } });
-            }
+        if (showAbout) {
+            controls.start({ top: "20%", y: 0, transition: { duration: 0.5 } });
+        } else if (!isHome) {
+            controls.start({ top: "0px", y: 0, transition: { duration: 0.5 } });
         } else {
-            controls.start({ top: 0, y: 0, transition: { duration: 0.5 } });
+            controls.start({
+                top: scrollY > 10 ? "0px" : "50%",
+                y: scrollY > 10 ? 0 : "-50%",
+                transition: { duration: 0.5 }
+            });
         }
-    }, [scrollY, controls, pathname]);
+    }, [scrollY, showAbout, isHome, controls]);
 
     const logoText = "Alejo Ayala";
 
-    // Función de scroll suave
-    const handleScroll = (id) => {
-        const element = document.querySelector(id);
-        if (element) {
-            element.scrollIntoView({ behavior: "smooth", block: "start" });
+    const handleHomeClick = () => {
+        if (!isHome) {
+            router.push("/");
+        } else {
+            window.scrollTo({ top: 0, behavior: "smooth" }); 
+        }
+    };
+
+    const handleWorkClick = () => {
+        if (!isHome) {
+            router.push("/#work");
+        } else {
+            document.querySelector("#work")?.scrollIntoView({ behavior: "smooth" });
         }
     };
 
     return (
         <motion.header
             animate={controls}
-            initial={{
-                top: pathname === "/" ? "50%" : 0,
-                y: pathname === "/" ? "-50%" : 0,
-            }}
+            initial={{ top: "50%", y: "-50%" }}
             className="fixed left-0 w-full px-8 py-6 bg-transparent uppercase text-md tracking-widest text-white z-50 font-helveticaLight"
         >
             <div className="max-w-7xl w-full mx-auto flex flex-col items-center">
 
+                {/* Logo */}
                 <div
                     className="w-screen flex justify-evenly px-[25rem] text-[20px] font-helveticaBold cursor-pointer"
-                    onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                    onClick={handleHomeClick}
                 >
                     {logoText.split("").map((char, index) => (
-                        <span key={index} key={index}>{char}</span>
+                        <span key={index}>{char}</span>
                     ))}
                 </div>
 
-                {/* Menú alineado con el logo */}
+                {/* Menú */}
                 <div className="w-screen flex justify-between px-[27rem] mt-4 uppercase">
-                    <button onClick={() => handleScroll("#work")}>WORK</button>
-                    <button onClick={() => handleScroll("#about")}>ABOUT</button>
+                    <button onClick={handleWorkClick}>WORK</button>
+                    <button onClick={onAboutClick}>ABOUT</button>
                 </div>
 
             </div>

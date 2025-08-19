@@ -36,14 +36,12 @@ export default function Work() {
 
     return (
         <section id='work'>
-            {/* Filtro por categorías */}
             <div className="w-full flex justify-center gap-56 flex-wrap pt-40 pb-6">
                 {renderFilterButtons(group1)}
                 {renderFilterButtons(group2)}
                 {renderFilterButtons(group3)}
             </div>
 
-            {/* Grid de proyectos con animación */}
             <div className="w-screen min-h-screen pt-3 grid grid-cols-1 md:grid-cols-2">
                 <AnimatePresence>
                     {filteredProjects.map((project, index) => (
