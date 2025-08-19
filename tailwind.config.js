@@ -11,6 +11,12 @@ module.exports = {
                 sans: ['Helvetica', 'Arial', 'sans-serif'],
                 trade: ['Trade Gothic', 'sans-serif'],
                 ablation: ['Ablation', 'sans-serif'],
+                helvetica: ['Helvetica', 'sans-serif'],
+                helveticaBold: ['Helvetica Bold', 'sans-serif'],
+                helveticaLight: ['Helvetica Light', 'sans-serif'],
+                helveticaBlack: ['Helvetica Black', 'sans-serif'],
+                helveticaThin: ['Helvetica Thin', 'sans-serif'],
+
             },
         },
     },

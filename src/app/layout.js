@@ -3,12 +3,13 @@ import React, { useState, useEffect } from 'react';
 import './globals.css';
 import { AnimatePresence, motion } from 'framer-motion';
 import Header from './components/Header/Header';
+import About from './components/About/About';
 import { usePathname } from 'next/navigation';
 
 export default function RootLayout({ children }) {
   const pathname = usePathname();
   const [scrollY, setScrollY] = useState(0);
-  const [showAbout, setShowAbout] = useState(false); // estado global
+  const [showAbout, setShowAbout] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -19,8 +20,17 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className="bg-black text-white overflow-x-hidden">
+        {/* Header siempre visible */}
         <Header scrollY={scrollY} onAboutClick={() => setShowAbout(true)} />
 
+        {/* Overlay About */}
+        <AnimatePresence>
+          {showAbout && (
+            <About setShowAbout={setShowAbout} />
+          )}
+        </AnimatePresence>
+
+        {/* Contenido principal */}
         <AnimatePresence mode="wait">
           <motion.div
             key={pathname}
@@ -30,10 +40,7 @@ export default function RootLayout({ children }) {
             transition={{ duration: 0.5 }}
             className="w-full"
           >
-            {/* PASAMOS showAbout y setShowAbout como props */}
-            {React.isValidElement(children)
-              ? React.cloneElement(children, { showAbout, setShowAbout })
-              : children}
+            {children}
           </motion.div>
         </AnimatePresence>
       </body>
