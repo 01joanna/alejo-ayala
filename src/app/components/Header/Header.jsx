@@ -22,6 +22,14 @@ export default function Header({ scrollY }) {
 
     const logoText = "Alejo Ayala";
 
+    // Función de scroll suave
+    const handleScroll = (id) => {
+        const element = document.querySelector(id);
+        if (element) {
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+    };
+
     return (
         <motion.header
             animate={controls}
@@ -32,20 +40,20 @@ export default function Header({ scrollY }) {
             className="fixed left-0 w-full px-8 py-6 bg-transparent uppercase text-md tracking-widest text-white z-50 font-helveticaLight"
         >
             <div className="max-w-7xl w-full mx-auto flex flex-col items-center">
-                
-                {/* Logo: enlace a home con scroll smooth */}
-                <Link href="/" scroll={false}>
-                    <div className="w-screen flex justify-evenly px-[25rem] text-[20px] font-helveticaBold cursor-pointer">
-                        {logoText.split("").map((char, index) => (
-                            <span key={index}>{char}</span>
-                        ))}
-                    </div>
-                </Link>
+
+                <div
+                    className="w-screen flex justify-evenly px-[25rem] text-[20px] font-helveticaBold cursor-pointer"
+                    onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                >
+                    {logoText.split("").map((char, index) => (
+                        <span key={index} key={index}>{char}</span>
+                    ))}
+                </div>
 
                 {/* Menú alineado con el logo */}
                 <div className="w-screen flex justify-between px-[27rem] mt-4 uppercase">
-                    <a href="#work">Work</a>
-                    <a href="#about">About</a>
+                    <button onClick={() => handleScroll("#work")}>WORK</button>
+                    <button onClick={() => handleScroll("#about")}>ABOUT</button>
                 </div>
 
             </div>
