@@ -35,7 +35,7 @@ export default function Project() {
                 <h2 className="font-bold uppercase">
                     “{project.title}”, DIRECTED BY{" "}
                     {Array.isArray(project.director)
-                        ? project.director.join(", ")
+                        ? project.director.join(" & ")
                         : project.director} <br />
                     FOR{" "}
                     {Array.isArray(project.for)
