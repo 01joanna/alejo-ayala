@@ -18,20 +18,19 @@ const projects = [
     },
     {
         id: 2,
-        title: "RazzWeek FALTA ",
+        title: "RazzWeek",
         for: "Razzmatazz",
         director: ["Alejo Ayala", "Arturo Casaú"],
         producer: "Terrier",
         year: "2025",
         category: ["Director", "Editor", "Commercial"],
-        video: "https://player.vimeo.com/video/1111378750",
+        video: "https://player.vimeo.com/video/1113163135",
         images: [
-            "https://freight.cargo.site/w/900/h/506/q/75/i/S2197288813781510683891522074321/re-VISIT-SP4IN.00_00_08_02.Imagen-fija001.jpg",
-            "https://freight.cargo.site/w/900/h/506/q/75/i/B2197289187475652129099618711249/re-VISIT-SP4IN.00_00_17_15.Imagen-fija005.jpg",
-            "https://freight.cargo.site/w/900/h/506/q/75/i/A2197289007878151827463424177873/re-VISIT-SP4IN.00_00_16_19.Imagen-fija004.jpg",
-            "https://freight.cargo.site/w/900/h/506/q/75/i/B2197289543424025775399126693585/re-VISIT-SP4IN.00_00_58_10.Imagen-fija018.jpg",
-            "https://freight.cargo.site/w/900/h/506/q/75/i/T2197290359231282435204046911185/re-VISIT-SP4IN.00_00_49_18.Imagen-fija014.jpg",
-            "https://freight.cargo.site/w/900/h/506/q/75/i/S2197290452184425822626477504209/re-VISIT-SP4IN.00_02_07_06.Imagen-fija046.jpg"
+            "https://res.cloudinary.com/dnxujqbde/image/upload/v1756199916/Razz_final.00_00_47_00.Still042_khiwze.png",
+            "https://res.cloudinary.com/dnxujqbde/image/upload/v1756199916/Razz_final.00_00_05_21.Still035_nmvot7.png",
+            "https://res.cloudinary.com/dnxujqbde/image/upload/v1756199916/Razz_final.00_00_48_12.Still043_y10zsn.png",
+            "https://res.cloudinary.com/dnxujqbde/image/upload/v1756199916/Razz_final.00_00_19_21.Still038_gfwol1.png",
+            
         ]
     },
     {
@@ -42,7 +41,7 @@ const projects = [
         producer: "Terrier",
         year: "2023",
         category: ["Director", "Editor", "Music Video"],
-        video: "https://player.vimeo.com/video/558780923",
+        video: "https://player.vimeo.com/video/1111372146",
         images: [
             "https://res.cloudinary.com/dnxujqbde/image/upload/v1755551505/8_vzwmrm.png", "https://res.cloudinary.com/dnxujqbde/image/upload/v1755551505/8_vzwmrm.png",
             "https://res.cloudinary.com/dnxujqbde/image/upload/v1755551505/6_h3gcsm.png",
@@ -51,31 +50,25 @@ const projects = [
     },
     {
         id: 4,
-        title: "Metrika FALTA",
+        title: "Metrika",
         for: "Metrika",
         director: ["Alejo Ayala", "Arturo Casaú"],
         producer: "Terrier",
         year: "2025",
         category: ["Director", "Editor", "Commercial"],
-        video: "https://player.vimeo.com/video/558780923",
+        video: "",
         images: [
-            "https://freight.cargo.site/w/900/h/506/q/75/i/S2197288813781510683891522074321/re-VISIT-SP4IN.00_00_08_02.Imagen-fija001.jpg",
-            "https://freight.cargo.site/w/900/h/506/q/75/i/B2197289187475652129099618711249/re-VISIT-SP4IN.00_00_17_15.Imagen-fija005.jpg",
-            "https://freight.cargo.site/w/900/h/506/q/75/i/A2197289007878151827463424177873/re-VISIT-SP4IN.00_00_16_19.Imagen-fija004.jpg",
-            "https://freight.cargo.site/w/900/h/506/q/75/i/B2197289543424025775399126693585/re-VISIT-SP4IN.00_00_58_10.Imagen-fija018.jpg",
-            "https://freight.cargo.site/w/900/h/506/q/75/i/T2197290359231282435204046911185/re-VISIT-SP4IN.00_00_49_18.Imagen-fija014.jpg",
-            "https://freight.cargo.site/w/900/h/506/q/75/i/S2197290452184425822626477504209/re-VISIT-SP4IN.00_02_07_06.Imagen-fija046.jpg"
         ]
     },
     {
         id: 5,
-        title: "MIRA FESTIVAL FALTA",
+        title: "MIRA FESTIVAL",
         for: "Mira Festival",
         director: "Alejo Ayala",
         producer: "We Love Martha",
         year: "2023",
         category: ["Director", "Editor", "Commercial"],
-        video: "https://player.vimeo.com/video/1111376126",
+        video: "https://player.vimeo.com/video/1111401649",
         images: [
             "https://res.cloudinary.com/dnxujqbde/image/upload/v1755626396/Untitled1_mfzyqg.png",
             "https://res.cloudinary.com/dnxujqbde/image/upload/v1755626396/Untitled3_rk72bd.png",
@@ -85,6 +78,23 @@ const projects = [
     },
     {
         id: 6,
+        title: "Manin",
+        for: ["Euskoprincess", "Metrika", "Glorysixvain"],
+        director: "Alejo Ayala",
+        producer: "Terrier",
+        year: "2025",
+        category: ["Director", "Editor", "Music Video"],
+        video: "https://player.vimeo.com/video/1113165595",
+        images: [
+            "https://res.cloudinary.com/dnxujqbde/image/upload/v1756200560/Manin_final_color.00_02_27_07.Still058_ukqwwp.png",
+            "https://res.cloudinary.com/dnxujqbde/image/upload/v1756200555/Manin_final_color.00_00_42_01.Still042_bh1ltq.png",
+            "https://res.cloudinary.com/dnxujqbde/image/upload/v1756200556/Manin_final_color.00_00_56_10.Still047_wcqtah.png",
+            "https://res.cloudinary.com/dnxujqbde/image/upload/v1756200608/Manin_final_color.00_00_37_14.Still041_okd5hd.png",
+        ]
+        
+    },
+    {
+        id: 7,
         title: "Futarani",
         for: "Euskoprincess",
         director: "Alejo Ayala",
@@ -100,7 +110,7 @@ const projects = [
         ]
     },
     {
-        id: 7,
+        id: 8,
         title: "",
         for: "4YFN (Four Years From Now)",
         director: "We Love Martha",
@@ -112,7 +122,25 @@ const projects = [
         ]
     },
     {
-        id: 8,
+        id: 9,
+        title: "FUEGO RAZZMATAZZ 2024",
+        for: "Razzmatazz",
+        director: "Alejo Ayala",
+        producer: "Terrier",
+        year: "2024",
+        category: ["Director", "Editor", "Commercial"],
+        video: "https://player.vimeo.com/video/1111733252",
+        images: [
+        "https://res.cloudinary.com/dnxujqbde/image/upload/v1755711102/ByN-DELIVER_FUEGO_HIGHRES.00_00_19_10.Still001_bwxzx7.png", 
+        "https://res.cloudinary.com/dnxujqbde/image/upload/v1755711102/ByN-DELIVER_FUEGO_HIGHRES.00_00_27_19.Still004_f0togh.png", 
+        "https://res.cloudinary.com/dnxujqbde/image/upload/v1755711102/ByN-DELIVER_FUEGO_HIGHRES.00_00_29_19.Still005_ivf5ij.png", 
+        "https://res.cloudinary.com/dnxujqbde/image/upload/v1755711102/ByN-DELIVER_FUEGO_HIGHRES.00_00_18_19.Still002_pfp3ts.png", 
+        "https://res.cloudinary.com/dnxujqbde/image/upload/v1755711102/ByN-DELIVER_FUEGO_HIGHRES.00_00_04_20.Still006_vhqbn8.png", 
+        "https://res.cloudinary.com/dnxujqbde/image/upload/v1755711102/ByN-DELIVER_FUEGO_HIGHRES.00_00_20_02.Still003_gicfdy.png"
+        ]
+    },
+    {
+        id: 10,
         title: "Tu Forma de Amar",
         for: "C Mari",
         director: "Alejo Ayala",
@@ -129,7 +157,7 @@ const projects = [
         ]
     },
     {
-        id: 9,
+        id: 11,
         title: "Popper",
         for: "Ben Yart",
         director: "Alejo Ayala",
