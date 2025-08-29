@@ -43,7 +43,7 @@ const projects = [
         category: ["Director", "Editor", "Music Video"],
         video: "https://player.vimeo.com/video/1111372146",
         images: [
-            "https://res.cloudinary.com/dnxujqbde/image/upload/v1755551505/8_vzwmrm.png", "https://res.cloudinary.com/dnxujqbde/image/upload/v1755551505/8_vzwmrm.png",
+            "https://res.cloudinary.com/dnxujqbde/image/upload/v1755551505/8_vzwmrm.png", "https://res.cloudinary.com/dnxujqbde/image/upload/v1755551504/3_tyrptc.png",
             "https://res.cloudinary.com/dnxujqbde/image/upload/v1755551505/6_h3gcsm.png",
             "https://res.cloudinary.com/dnxujqbde/image/upload/v1755551506/10_pr1b6g.png"
         ]
@@ -58,6 +58,17 @@ const projects = [
         category: ["Director", "Editor", "Commercial"],
         video: "",
         images: [
+            "https://i.imgur.com/TXS8Ps7.jpeg",
+            "https://i.imgur.com/D9VhVeF.jpeg",
+            "https://i.imgur.com/tYwevTs.jpeg",
+            "https://i.imgur.com/73mZWcI.jpeg",
+            "https://i.imgur.com/8eQFFst.jpeg",
+            "https://i.imgur.com/0JpOobX.jpeg",
+            "https://i.imgur.com/gODGFXh.jpeg",
+            "https://i.imgur.com/zUxm6oG.jpeg",
+            "https://i.imgur.com/HwyiCIR.jpeg",
+            "https://i.imgur.com/C0bSllf.jpeg",
+            "https://i.imgur.com/T7HwPnr.jpeg"
         ]
     },
     {
@@ -118,7 +129,8 @@ const projects = [
         year: "2025",
         category: ["Editor", "Commercial"],
         video: "",
-        images: [""
+        images: [
+
         ]
     },
     {
