@@ -62,9 +62,9 @@ export default function Work() {
                             <div className="absolute inset-0 flex flex-col justify-center items-center bg-black bg-opacity-50 opacity-0 transition-opacity duration-500 group-hover:opacity-50 text-white text-center px-4">
                                 <h2 className="text-lg font-semibold uppercase">{project.title}</h2>
                                 <p className="text-xs mt-1 uppercase tracking-widest">
-                                    {Array.isArray(project.director)
-                                        ? project.director.join(" & ")
-                                        : project.director}
+                                    {Array.isArray(project.for)
+                                        ? project.for.join(" & ")
+                                        : project.for}
                                 </p>
                                 <p className="text-sm mt-1">{project.year}</p>
                             </div>
