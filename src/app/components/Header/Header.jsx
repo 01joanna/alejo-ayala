@@ -24,7 +24,6 @@ export default function Header({ scrollY, onAboutClick, showAbout }) {
         }
     }, [scrollY, showAbout, isHome, controls]);
 
-    const logoText = "Alejo Ayala";
 
     const handleHomeClick = () => {
         if (!isHome) {
@@ -48,23 +47,13 @@ export default function Header({ scrollY, onAboutClick, showAbout }) {
             initial={{ top: "50%", y: "-50%" }}
             className="fixed left-0 w-full px-8 py-6 bg-transparent uppercase text-md tracking-widest text-white z-50 font-helveticaLight"
         >
-            <div className="max-w-7xl w-full mx-auto flex flex-col items-center">
+            <div className="max-w-7xl w-full mx-auto flex items-center justify-evenly">
+                
+            <button className="cursor-pointer" onClick={handleWorkClick}>WORK</button>
+            <h1 className="font-helveticaBold cursor-pointer tracking-widest"
+            onClick={handleHomeClick}>Alejo Ayala</h1>
+            <button className="cursor-pointer" onClick={onAboutClick}>ABOUT</button>
 
-                {/* Logo */}
-                <div
-                    className="w-screen flex justify-evenly px-[25rem] text-[20px] font-helveticaBold cursor-pointer"
-                    onClick={handleHomeClick}
-                >
-                    {logoText.split("").map((char, index) => (
-                        <span key={index}>{char}</span>
-                    ))}
-                </div>
-
-                {/* Menú */}
-                <div className="w-screen flex justify-between px-[27rem] mt-4 uppercase">
-                    <button onClick={handleWorkClick}>WORK</button>
-                    <button onClick={onAboutClick}>ABOUT</button>
-                </div>
 
             </div>
         </motion.header>
