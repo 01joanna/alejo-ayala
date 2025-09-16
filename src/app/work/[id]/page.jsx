@@ -18,6 +18,7 @@ export default function Project() {
 
     return (
         <section className="w-screen min-h-screen flex flex-col items-center justify-center pt-40 px-4 pb-20">
+            {/* Video */}
             {project.video && (
                 <div className="w-full max-w-5xl aspect-video mx-auto">
                     <iframe
@@ -31,20 +32,28 @@ export default function Project() {
                 </div>
             )}
 
+            {/* Información */}
             <div className={`text-center ${project.video ? "mt-6" : "mt-0"}`}>
                 <h2 className="font-bold uppercase">
                     “{project.title}”, DIRECTED BY{" "}
                     {Array.isArray(project.director)
                         ? project.director.join(" & ")
-                        : project.director} <br />
-                    FOR{" "}
-                    {Array.isArray(project.for)
-                        ? project.for.join(", ")
-                        : project.for}
+                        : project.director}
+                    {project.for && project.for.length > 0 && (
+                        <>
+                            <br />
+                            FOR{" "}
+                            {Array.isArray(project.for)
+                                ? project.for.join(", ")
+                                : project.for}
+                        </>
+                    )}
                 </h2>
                 <p className="mt-2">{project.year}</p>
                 <p className="mt-1">{project.description}</p>
             </div>
+
+            {/* Grid de imágenes */}
             <div
                 className="mt-8 w-full grid px-20"
                 style={{

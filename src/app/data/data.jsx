@@ -195,6 +195,52 @@ const projects = [
             "https://res.cloudinary.com/dnxujqbde/image/upload/v1755627226/Untitled1_y6rvqf.png",
 
         ]
+    },
+    {
+        id: 12,
+        title: "Risk",
+        for: "",
+        director: "Arturo Casaú",
+        producer: "Terrier",
+        year: "2025",
+        category: [ "Editor", "Music Video"],
+        video: "https://player.vimeo.com/video/1114262233",
+        images: [
+            "https://res.cloudinary.com/dnxujqbde/image/upload/v1756479721/RISK_FINAL.00_01_33_08.Imagen_fija022_yry0oe.jpg", 
+            "https://res.cloudinary.com/dnxujqbde/image/upload/v1756479721/RISK_FINAL.00_00_00_20.Imagen_fija001_nxfh9r.jpg", 
+            "https://res.cloudinary.com/dnxujqbde/image/upload/v1756479721/RISK_FINAL.00_01_45_09.Imagen_fija024_w3ddhu.jpg", 
+            "https://res.cloudinary.com/dnxujqbde/image/upload/v1756479721/RISK_FINAL.00_00_18_18.Imagen_fija005_dsifn1.jpg"
+        ]
+    },
+    {
+        id: 13,
+        title: "Re Visit Spain",
+        for: "",
+        director: "Arturo Casaú",
+        producer: "Terrier",
+        year: "2024",
+        category: [ "Editor"], 
+        video: "https://player.vimeo.com/video/1114273388",
+        images: [
+                "https://res.cloudinary.com/dnxujqbde/image/upload/v1756479949/re_VISIT_SP4IN.00_00_58_10.Imagen_fija018_dwklhz.jpg", 
+                "https://res.cloudinary.com/dnxujqbde/image/upload/v1756479948/re_VISIT_SP4IN.00_00_17_15.Imagen_fija005_a2xsyc.jpg",
+                "https://res.cloudinary.com/dnxujqbde/image/upload/v1756479947/re_VISIT_SP4IN.00_00_39_01.Imagen_fija010_z1yidy.jpg",
+                "https://res.cloudinary.com/dnxujqbde/image/upload/v1756479948/re_VISIT_SP4IN.00_02_05_06.Imagen_fija045_f6xnzg.jpg",
+
+        ]
+    },
+    {
+        id: 14,
+        title: "Cultural Time",
+        for: "",
+        director: "Arturo Casaú",
+        producer: "Terrier",
+        year: "2023",
+        category: [ "Editor"],
+        video: "https://player.vimeo.com/video/1114261296",
+        images: [
+            "https://res.cloudinary.com/dnxujqbde/image/upload/v1756480394/Untitled6_pcne0v.png","https://res.cloudinary.com/dnxujqbde/image/upload/v1756480393/Untitled7_i2sm6d.png", "https://res.cloudinary.com/dnxujqbde/image/upload/v1756480394/Untitled2_ow1yyh.png", "https://res.cloudinary.com/dnxujqbde/image/upload/v1756480392/Untitled_hrxanx.png"
+        ]
     }
 ]
 
