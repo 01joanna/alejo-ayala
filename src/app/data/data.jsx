@@ -55,7 +55,7 @@ const projects = [
         director: ["Alejo Ayala", "Arturo Casaú"],
         producer: "Terrier",
         year: "2025",
-        category: ["Director", "Editor", "Commercial"],
+        category: ["Director", "Editor", "Music Video"],
         video: "",
         images: [
 
@@ -70,13 +70,6 @@ const projects = [
             "https://i.imgur.com/73mZWcI.jpeg",
             "https://i.imgur.com/tYwevTs.jpeg",
             "https://i.imgur.com/D9VhVeF.jpeg",
-
-
-
-
-
-
-
         ]
     },
     {
@@ -203,7 +196,7 @@ const projects = [
         director: "Arturo Casaú",
         producer: "Terrier",
         year: "2025",
-        category: [ "Editor", "Music Video"],
+        category: [ "Editor", "Commercial"],
         video: "https://player.vimeo.com/video/1114262233",
         images: [
             "https://res.cloudinary.com/dnxujqbde/image/upload/v1756479721/RISK_FINAL.00_01_33_08.Imagen_fija022_yry0oe.jpg", 
@@ -219,7 +212,7 @@ const projects = [
         director: "Arturo Casaú",
         producer: "Terrier",
         year: "2024",
-        category: [ "Editor"], 
+        category: [ "Editor", "Commercial"], 
         video: "https://player.vimeo.com/video/1114273388",
         images: [
                 "https://res.cloudinary.com/dnxujqbde/image/upload/v1756479949/re_VISIT_SP4IN.00_00_58_10.Imagen_fija018_dwklhz.jpg", 
@@ -236,7 +229,7 @@ const projects = [
         director: "Arturo Casaú",
         producer: "Terrier",
         year: "2023",
-        category: [ "Editor"],
+        category: [ "Editor", "Commercial"],
         video: "https://player.vimeo.com/video/1114261296",
         images: [
             "https://res.cloudinary.com/dnxujqbde/image/upload/v1756480394/Untitled6_pcne0v.png","https://res.cloudinary.com/dnxujqbde/image/upload/v1756480393/Untitled7_i2sm6d.png", "https://res.cloudinary.com/dnxujqbde/image/upload/v1756480394/Untitled2_ow1yyh.png", "https://res.cloudinary.com/dnxujqbde/image/upload/v1756480392/Untitled_hrxanx.png"
