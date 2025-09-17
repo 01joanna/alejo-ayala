@@ -48,7 +48,7 @@ export default function Header({ scrollY, onAboutClick, showAbout }) {
                 top: isHome ? "50%" : "0px", 
                 y: isHome ? "-50%" : "0" 
             }}
-            className={`${isWorkPage ? "absolute mt-15" : "fixed"} left-0 w-full px-8 py-6 bg-transparent uppercase text-md tracking-widest text-white z-50 font-helveticaLight`}
+            className={`${isWorkPage ? "absolute mt-15" : "fixed"} left-0 w-full px-8 py-6 bg-transparent uppercase text-md tracking-widest text-white z-50 font-helveticaLight md:pb-30 lg:pb-0`}
         >
             <div className="max-w-7xl w-full mx-auto flex items-center justify-evenly">
                 <button className="cursor-pointer" onClick={handleWorkClick}>WORK</button>
