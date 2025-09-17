@@ -1,5 +1,6 @@
-"use client";
-import React from "react";
+'use client';
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import projects from "../../data/data";
 import { useParams } from "next/navigation";
 
@@ -7,6 +8,7 @@ export default function Project() {
     const params = useParams();
     const project = projects.find((p) => p.id.toString() === params.id);
 
+    const [lightboxIndex, setLightboxIndex] = useState(null);
 
     if (!project)
         return (
@@ -16,6 +18,13 @@ export default function Project() {
                 </p>
             </div>
         );
+
+    const openLightbox = (index) => setLightboxIndex(index);
+    const closeLightbox = () => setLightboxIndex(null);
+    const prevImage = () =>
+        setLightboxIndex((i) => (i > 0 ? i - 1 : project.images.length - 1));
+    const nextImage = () =>
+        setLightboxIndex((i) => (i < project.images.length - 1 ? i + 1 : 0));
 
     return (
         <section className="w-screen min-h-screen flex flex-col items-center justify-center pt-40 px-4 pb-20">
@@ -29,7 +38,7 @@ export default function Project() {
                         allow="autoplay; fullscreen; picture-in-picture"
                         allowFullScreen
                         title={project.title}
-                    ></iframe>
+                    />
                 </div>
             )}
 
@@ -56,7 +65,7 @@ export default function Project() {
 
             {/* Grid de imágenes */}
             <div
-                className="mt-8 lg:w-full md:w-[50rem] lg:grid md:flex md:flex-col px-20"
+                className="mt-8 lg:grid md:flex gap-0 w-full md:max-w-5xl"
                 style={{
                     gridTemplateColumns:
                         project.images.length === 2
@@ -69,15 +78,56 @@ export default function Project() {
                 }}
             >
                 {project.images.map((img, i) => (
-                    <div key={i} className="w-full overflow-hidden">
-                        <img
-                            src={img}
-                            alt={`${project.title} image ${i + 1}`}
-                            className="lg:w-full md:w-[600px] lg:max-h-[300px] md:mix-h-[300px] object-cover"
-                        />
-                    </div>
+                    <img
+                        key={i}
+                        src={img}
+                        alt={`${project.title} image ${i + 1}`}
+                        className="w-full max-h-[300px] object-cover cursor-pointer hover:opacity-80 transition"
+                        onClick={() => openLightbox(i)}
+                    />
                 ))}
             </div>
+
+            {/* Lightbox */}
+            <AnimatePresence>
+                {lightboxIndex !== null && (
+                    <motion.div
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={closeLightbox}
+                    >
+                        <motion.img
+                            key={project.images[lightboxIndex]}
+                            src={project.images[lightboxIndex]}
+                            className="max-h-[80vh] max-w-[90vw] object-contain"
+                            initial={{ scale: 0.8 }}
+                            animate={{ scale: 1 }}
+                            exit={{ scale: 0.8 }}
+                        />
+                        {/* Navegación */}
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                prevImage();
+                            }}
+                            className="absolute left-4 text-white text-3xl"
+                        >
+                            ‹
+                        </button>
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                nextImage();
+                            }}
+                            className="absolute right-4 text-white text-3xl"
+                        >
+                            ›
+                        </button>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </section>
     );
 }
