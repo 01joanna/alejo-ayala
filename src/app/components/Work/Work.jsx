@@ -36,7 +36,7 @@ export default function Work() {
 
     return (
         <section id='work'>
-            <div className="w-full flex justify-center gap-56 flex-wrap pt-40 pb-6">
+            <div className="w-full flex justify-center lg:gap-56 md:gap-0 flex-wrap pb-6 ">
                 {renderFilterButtons(group1)}
                 {renderFilterButtons(group2)}
                 {renderFilterButtons(group3)}

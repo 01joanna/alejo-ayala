@@ -7,6 +7,7 @@ export default function Project() {
     const params = useParams();
     const project = projects.find((p) => p.id.toString() === params.id);
 
+
     if (!project)
         return (
             <div className="w-screen h-screen flex justify-center items-center">
@@ -55,7 +56,7 @@ export default function Project() {
 
             {/* Grid de imágenes */}
             <div
-                className="mt-8 w-full grid px-20"
+                className="mt-8 lg:w-full md:w-[50rem] lg:grid md:flex md:flex-col px-20"
                 style={{
                     gridTemplateColumns:
                         project.images.length === 2
@@ -72,7 +73,7 @@ export default function Project() {
                         <img
                             src={img}
                             alt={`${project.title} image ${i + 1}`}
-                            className="w-full max-h-[300px] object-cover"
+                            className="lg:w-full md:w-[600px] lg:max-h-[300px] md:mix-h-[300px] object-cover"
                         />
                     </div>
                 ))}
