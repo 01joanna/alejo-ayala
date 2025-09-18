@@ -1,29 +1,23 @@
-"use client"
-import React, { useState, useRef, useEffect } from "react";
+'use client';
+import React, { useState, useRef } from "react";
 import Work from "./components/Work/Work";
 import About from "./components/About/About";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Home() {
   const [showAbout, setShowAbout] = useState(false);
+  const [touched, setTouched] = useState(false);
   const videoRef = useRef(null);
 
-  useEffect(() => {
+  const handleTouch = () => {
     if (videoRef.current) {
-      const playPromise = videoRef.current.play();
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-          })
-          .catch((error) => {
-            console.log("Autoplay bloqueado:", error);
-          });
-      }
+      videoRef.current.play();
     }
-  }, []);
+    setTouched(true);
+  };
 
   return (
-    <section className="relative w-screen min-h-screen">
+    <section className="relative w-screen min-h-screen pb-20">
       <AnimatePresence>
         {!showAbout && (
           <motion.div
@@ -36,12 +30,19 @@ export default function Home() {
             <video
               ref={videoRef}
               src="/reel_home.mp4"
-              autoPlay
               muted
               loop
               playsInline
               className="absolute top-0 left-0 w-full h-full object-cover pointer-events-none"
             />
+
+            {/* Overlay invisible para detectar el primer toque en móvil */}
+            {!touched && (
+              <div
+                onClick={handleTouch}
+                className="absolute inset-0 z-50"
+              />
+            )}
           </motion.div>
         )}
       </AnimatePresence>
