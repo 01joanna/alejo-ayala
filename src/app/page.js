@@ -1,11 +1,26 @@
-'use client';
-import React, { useState } from "react";
+"use client"
+import React, { useState, useRef, useEffect } from "react";
 import Work from "./components/Work/Work";
 import About from "./components/About/About";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Home() {
   const [showAbout, setShowAbout] = useState(false);
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      const playPromise = videoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+          })
+          .catch((error) => {
+            console.log("Autoplay bloqueado:", error);
+          });
+      }
+    }
+  }, []);
 
   return (
     <section className="relative w-screen min-h-screen">
@@ -19,6 +34,7 @@ export default function Home() {
             transition={{ duration: 0.8 }}
           >
             <video
+              ref={videoRef}
               src="/reel_home.mp4"
               autoPlay
               muted
