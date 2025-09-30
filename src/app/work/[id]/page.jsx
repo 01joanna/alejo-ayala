@@ -77,7 +77,7 @@ export default function Project() {
                                     : "repeat(3, minmax(0, 1fr))",
                 }}
             >
-                {project.images.map((img, i) => (
+                {project.id !== 8 && project.images.map((img, i) => (
                     <img
                         key={i}
                         src={img}
