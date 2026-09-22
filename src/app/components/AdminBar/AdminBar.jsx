@@ -131,7 +131,7 @@ export default function AdminBar() {
                     onClick={handleLogout}
                     className="px-4 py-2 bg-black text-white border border-white/40 uppercase text-xs rounded-md cursor-pointer hover:border-white transition"
                 >
-                    Logout
+                    Cerrar sesión
                 </button>
 
             </div>
