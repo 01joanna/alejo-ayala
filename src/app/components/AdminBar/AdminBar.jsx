@@ -247,7 +247,7 @@ export default function AdminBar() {
                                                             );
 
                                                             router.push(
-                                                                `/ work / ${project.id} `
+                                                                `/work/${project.id}`
                                                             );
                                                         }}
                                                         className="text-xs uppercase underline cursor-pointer"
