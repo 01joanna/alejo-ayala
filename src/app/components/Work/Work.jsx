@@ -25,13 +25,16 @@ export default function Work() {
         loadProjects();
     }, []);
 
-    const filteredProjects = projects.filter((project) => {
-        if (filter === "all") return true;
+    const filteredProjects = projects
+        .filter((project) => {
+            if (filter === "all") return true;
 
-        return project.category.some(
-            (cat) => cat.toLowerCase() === filter
-        );
-    });
+            return project.category.some(
+                (cat) => cat.toLowerCase() === filter
+            );
+        })
+        .sort((a, b) => Number(b.year) - Number(a.year));
+
 
     const renderFilterButtons = (group) => (
         <div className="flex gap-2">
@@ -39,11 +42,10 @@ export default function Work() {
                 <button
                     key={cat}
                     onClick={() => setFilter(cat)}
-                    className={`px-4 py-2 uppercase text-sm cursor-pointer transition ${
-                        filter === cat
+                    className={`px-4 py-2 uppercase text-sm cursor-pointer transition ${filter === cat
                             ? "bg-white text-black"
                             : "bg-transparent text-white"
-                    }`}
+                        }`}
                 >
                     {cat === "all"
                         ? "All"
