@@ -224,13 +224,8 @@ export default function AdminBar() {
 
                                                 <button
                                                     onClick={() => {
-                                                        setShowProjects(
-                                                            false
-                                                        );
-
-                                                        router.push(
-                                                            `/ work / ${project.id} `
-                                                        );
+                                                        setShowProjects(false);
+                                                        router.push(`/work/${project.id}`);
                                                     }}
                                                     className="text-left uppercase text-sm cursor-pointer hover:opacity-60 transition flex-1"
                                                 >
