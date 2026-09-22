@@ -122,7 +122,7 @@ export default function NewProject() {
                 await createProject(newProject);
 
             router.push(
-                `/ work / ${createdProject.id} `
+                `/work/${createdProject.id} `
             );
 
         } catch (error) {
