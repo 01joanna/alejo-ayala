@@ -26,14 +26,18 @@ export default function Work() {
     }, []);
 
     const filteredProjects = projects
-        .filter((project) => {
-            if (filter === "all") return true;
+    .filter((project) => {
+        if (filter === "all") return true;
 
-            return project.category.some(
-                (cat) => cat.toLowerCase() === filter
-            );
-        })
-        .sort((a, b) => Number(b.year) - Number(a.year));
+        const categories = Array.isArray(project.category)
+            ? project.category
+            : [project.category];
+
+        return categories.some(
+            (cat) => cat?.toLowerCase() === filter
+        );
+    })
+    .sort((a, b) => Number(b.year) - Number(a.year));
 
 
     const renderFilterButtons = (group) => (
