@@ -21,16 +21,23 @@ export const getProjects = async () => {
 };
 
 export const getProjectById = async (id) => {
-    const projectRef = doc(db, "proyectos", String(id));
+    const projectRef = doc(
+        db,
+        "proyectos",
+        String(id)
+    );
+
     const snapshot = await getDoc(projectRef);
 
     if (!snapshot.exists()) {
         return null;
     }
 
+    const data = snapshot.data();
+
     return {
         id: snapshot.id,
-        ...snapshot.data(),
+        ...data,
     };
 };
 
@@ -59,9 +66,50 @@ export const uploadProjects = async (projects) => {
 };
 
 export const updateProject = async (id, project) => {
-    const projectRef = doc(db, "proyectos", String(id));
+    const projectRef = doc(
+        db,
+        "proyectos",
+        String(id)
+    );
 
-    await updateDoc(projectRef, project);
+    const projectToUpdate = {
+        ...project,
+
+        category: Array.isArray(project.category)
+            ? project.category
+            : project.category
+                ? [project.category]
+                : [],
+
+        for: Array.isArray(project.for)
+            ? project.for
+            : project.for
+                ? [project.for]
+                : [],
+
+        director: Array.isArray(project.director)
+            ? project.director
+            : project.director
+                ? [project.director]
+                : [],
+
+        producer: Array.isArray(project.producer)
+            ? project.producer
+            : project.producer
+                ? [project.producer]
+                : [],
+
+        images: Array.isArray(project.images)
+            ? project.images
+            : project.images
+                ? [project.images]
+                : [],
+    };
+
+    await updateDoc(
+        projectRef,
+        projectToUpdate
+    );
 };
 
 export const deleteProject = async (id) => {
