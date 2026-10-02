@@ -1,8 +1,15 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useParams, useRouter } from "next/navigation";
+import React, {
+    useEffect,
+    useState,
+    useRef,
+} from "react";
+
+import {
+    useParams,
+    useRouter,
+} from "next/navigation";
 
 import {
     getProjectById,
@@ -10,739 +17,1112 @@ import {
     deleteProject,
 } from "@/services/projects";
 
+import {
+    motion,
+    AnimatePresence,
+} from "framer-motion";
+
 import { useAuth } from "@/hooks/useAuth";
 
+
 export default function Project() {
+
     const params = useParams();
     const router = useRouter();
-
-    const { user, loading: authLoading } = useAuth();
+    const { user } = useAuth();
 
     const [project, setProject] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const [editing, setEditing] = useState(false);
-    const [saving, setSaving] = useState(false);
-    const [deleting, setDeleting] = useState(false);
-
-    const [lightboxIndex, setLightboxIndex] = useState(null);
+    const [showEdit, setShowEdit] = useState(false);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
     const [formData, setFormData] = useState({
         title: "",
-        for: "",
-        director: "",
-        producer: "",
+        for: [],
+        director: [],
+        producer: [],
         year: "",
         category: [],
         video: "",
-        images: "",
+        images: [],
     });
 
+    const [selectedImage, setSelectedImage] = useState(null);
+
+    const [saving, setSaving] = useState(false);
+    const [deleting, setDeleting] = useState(false);
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | LOAD PROJECT
+    |--------------------------------------------------------------------------
+    */
+
     useEffect(() => {
+
         const loadProject = async () => {
+
             try {
+
                 const data = await getProjectById(params.id);
+
+                if (!data) {
+                    router.push("/work");
+                    return;
+                }
 
                 setProject(data);
 
-                if (data) {
-                    setFormData({
-                        title: data.title || "",
+                /*
+                 * Normalizamos todos los campos que deberían ser arrays.
+                 *
+                 * Esto permite trabajar correctamente tanto con proyectos
+                 * antiguos que tengan strings como con proyectos nuevos
+                 * que ya tengan arrays.
+                 */
 
-                        for: Array.isArray(data.for)
-                            ? data.for.join(", ")
-                            : data.for || "",
+                setFormData({
+                    title: data.title || "",
 
-                        director: Array.isArray(data.director)
-                            ? data.director.join(", ")
-                            : data.director || "",
-
-                        producer: Array.isArray(data.producer)
-                            ? data.producer.join(", ")
-                            : data.producer || "",
-
-                        year: data.year || "",
-
-                        category: Array.isArray(project.category)
-                        ? project.category
-                        : project.category
-                            ? [project.category]
+                    for: Array.isArray(data.for)
+                        ? data.for
+                        : data.for
+                            ? [data.for]
                             : [],
 
-                        video: data.video || "",
+                    director: Array.isArray(data.director)
+                        ? data.director
+                        : data.director
+                            ? [data.director]
+                            : [],
 
-                        images: Array.isArray(data.images)
-                            ? data.images.join("\n")
-                            : "",
-                    });
-                }
+                    producer: Array.isArray(data.producer)
+                        ? data.producer
+                        : data.producer
+                            ? [data.producer]
+                            : [],
+
+                    year: data.year || "",
+
+                    /*
+                     * IMPORTANTE:
+                     * usamos data.category y no project.category.
+                     */
+                    category: Array.isArray(data.category)
+                        ? data.category
+                        : data.category
+                            ? [data.category]
+                            : [],
+
+                    video: data.video || "",
+
+                    images: Array.isArray(data.images)
+                        ? data.images
+                        : data.images
+                            ? [data.images]
+                            : [],
+                });
+
             } catch (error) {
-                console.error("Error loading project:", error);
+
+                console.error(
+                    "Error loading project:",
+                    error
+                );
+
             } finally {
+
                 setLoading(false);
+
             }
         };
+
 
         if (params.id) {
             loadProject();
         }
-    }, [params.id]);
+
+    }, [params.id, router]);
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | GENERAL INPUT CHANGE
+    |--------------------------------------------------------------------------
+    */
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
+
+        const {
+            name,
+            value,
+        } = e.target;
 
         setFormData((prev) => ({
             ...prev,
             [name]: value,
         }));
+
     };
 
-    const handleImageChange = (index, value) => {
-        const images = formData.images
-            ? formData.images.split("\n")
-            : [""];
 
-        images[index] = value;
-
-        setFormData((prev) => ({
-            ...prev,
-            images: images.join("\n"),
-        }));
-    };
-
-    const addImage = () => {
-        setFormData((prev) => ({
-            ...prev,
-            images: prev.images
-                ? `${prev.images}\n`
-                : "",
-        }));
-    };
-
-    const removeImage = (index) => {
-        const images = formData.images
-            ? formData.images.split("\n")
-            : [];
-
-        images.splice(index, 1);
-
-        setFormData((prev) => ({
-            ...prev,
-            images: images.join("\n"),
-        }));
-    };
+    /*
+    |--------------------------------------------------------------------------
+    | CATEGORY CHANGE
+    |--------------------------------------------------------------------------
+    */
 
     const handleCategoryChange = (category) => {
-        setFormData((prev) => ({
-            ...prev,
-            category: prev.category.includes(category)
-                ? prev.category.filter((item) => item !== category)
-                : [...prev.category, category],
-        }));
+
+        setFormData((prev) => {
+
+            const currentCategories = Array.isArray(prev.category)
+                ? prev.category
+                : [];
+
+            const alreadySelected =
+                currentCategories.includes(category);
+
+            return {
+                ...prev,
+
+                category: alreadySelected
+                    ? currentCategories.filter(
+                        (item) => item !== category
+                    )
+                    : [
+                        ...currentCategories,
+                        category,
+                    ],
+            };
+
+        });
+
     };
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | EDIT PROJECT
+    |--------------------------------------------------------------------------
+    */
+
     const handleEdit = () => {
+
+        if (!project) return;
+
         setFormData({
+
             title: project.title || "",
 
             for: Array.isArray(project.for)
-                ? project.for.join(", ")
-                : project.for || "",
+                ? project.for
+                : project.for
+                    ? [project.for]
+                    : [],
 
             director: Array.isArray(project.director)
-                ? project.director.join(", ")
-                : project.director || "",
+                ? project.director
+                : project.director
+                    ? [project.director]
+                    : [],
 
             producer: Array.isArray(project.producer)
-                ? project.producer.join(", ")
-                : project.producer || "",
+                ? project.producer
+                : project.producer
+                    ? [project.producer]
+                    : [],
 
             year: project.year || "",
 
             category: Array.isArray(project.category)
-            ? project.category
-            : project.category
-                ? [project.category]
-                : [],
+                ? project.category
+                : project.category
+                    ? [project.category]
+                    : [],
 
             video: project.video || "",
 
             images: Array.isArray(project.images)
-                ? project.images.join("\n")
-                : "",
+                ? project.images
+                : project.images
+                    ? [project.images]
+                    : [],
         });
 
-        setEditing(true);
+        setShowEdit(true);
+
     };
 
-    const handleCancel = () => {
-        setEditing(false);
-    };
 
-    const handleSave = async (e) => {
-        e.preventDefault();
+    /*
+    |--------------------------------------------------------------------------
+    | SAVE PROJECT
+    |--------------------------------------------------------------------------
+    */
+
+    const handleSave = async () => {
+
+        if (!project) return;
 
         setSaving(true);
 
         try {
+
+            /*
+             * Normalizamos absolutamente todo antes de enviarlo
+             * a Firebase.
+             */
+
             const updatedProject = {
+
                 title: formData.title.trim(),
 
-                for: formData.for
-                    .split(",")
-                    .map((item) => item.trim())
-                    .filter(Boolean),
+                for: Array.isArray(formData.for)
+                    ? formData.for
+                        .map((item) => item.trim())
+                        .filter(Boolean)
+                    : formData.for
+                        ? [formData.for.trim()]
+                        : [],
 
-                director: formData.director
-                    .split(",")
-                    .map((item) => item.trim())
-                    .filter(Boolean),
+                director: Array.isArray(formData.director)
+                    ? formData.director
+                        .map((item) => item.trim())
+                        .filter(Boolean)
+                    : formData.director
+                        ? [formData.director.trim()]
+                        : [],
 
-                producer: formData.producer
-                    .split(",")
-                    .map((item) => item.trim())
-                    .filter(Boolean),
+                producer: Array.isArray(formData.producer)
+                    ? formData.producer
+                        .map((item) => item.trim())
+                        .filter(Boolean)
+                    : formData.producer
+                        ? [formData.producer.trim()]
+                        : [],
 
                 year: formData.year.trim(),
-                category: formData.category,
+
+                /*
+                 * SIEMPRE ARRAY
+                 */
+                category: Array.isArray(formData.category)
+                    ? formData.category
+                    : formData.category
+                        ? [formData.category]
+                        : [],
 
                 video: formData.video.trim(),
 
-                images: formData.images
-                    .split("\n")
-                    .map((item) => item.trim())
-                    .filter(Boolean),
+                images: Array.isArray(formData.images)
+                    ? formData.images
+                        .map((item) => item.trim())
+                        .filter(Boolean)
+                    : formData.images
+                        ? [formData.images.trim()]
+                        : [],
             };
 
-            await updateProject(project.id, updatedProject);
 
-            setProject({
-                ...project,
+            await updateProject(
+                project.id,
+                updatedProject
+            );
+
+
+            /*
+             * Actualizamos inmediatamente el proyecto mostrado
+             * sin tener que volver a hacer fetch.
+             */
+
+            setProject((prev) => ({
+                ...prev,
                 ...updatedProject,
-            });
+            }));
 
-            setEditing(false);
+            setFormData((prev) => ({
+                ...prev,
+                ...updatedProject,
+            }));
+
+            setShowEdit(false);
+
         } catch (error) {
-            console.error("Error updating project:", error);
-            alert("No se ha podido guardar el proyecto.");
+
+            console.error(
+                "Error updating project:",
+                error
+            );
+
         } finally {
+
             setSaving(false);
+
         }
+
     };
 
-    const handleDelete = async () => {
-        const confirmed = window.confirm(
-            `¿Seguro que quieres eliminar "${project.title}"?`
-        );
 
-        if (!confirmed) {
-            return;
-        }
+    /*
+    |--------------------------------------------------------------------------
+    | DELETE PROJECT
+    |--------------------------------------------------------------------------
+    */
+
+    const handleDelete = async () => {
+
+        if (!project) return;
 
         setDeleting(true);
 
         try {
+
             await deleteProject(project.id);
 
-            router.push("/");
-        } catch (error) {
-            console.error("Error deleting project:", error);
+            router.push("/work");
 
-            alert("No se ha podido eliminar el proyecto.");
+        } catch (error) {
+
+            console.error(
+                "Error deleting project:",
+                error
+            );
 
             setDeleting(false);
+
         }
+
     };
 
-    const openLightbox = (index) => {
-        setLightboxIndex(index);
-    };
 
-    const closeLightbox = () => {
-        setLightboxIndex(null);
-    };
+    /*
+    |--------------------------------------------------------------------------
+    | LOADING
+    |--------------------------------------------------------------------------
+    */
 
-    const prevImage = () => {
-        setLightboxIndex((i) =>
-            i > 0 ? i - 1 : project.images.length - 1
-        );
-    };
+    if (loading) {
 
-    const nextImage = () => {
-        setLightboxIndex((i) =>
-            i < project.images.length - 1 ? i + 1 : 0
-        );
-    };
-
-    if (loading || authLoading) {
         return (
-            <div className="w-screen h-screen flex justify-center items-center">
-                <p className="uppercase text-white text-xl">
+            <main className="min-h-screen bg-black text-white flex items-center justify-center">
+                <p className="uppercase text-xs">
                     Loading...
                 </p>
-            </div>
+            </main>
         );
+
     }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | PROJECT NOT FOUND
+    |--------------------------------------------------------------------------
+    */
 
     if (!project) {
-        return (
-            <div className="w-screen h-screen flex justify-center items-center">
-                <p className="uppercase text-white text-xl">
-                    Proyecto no encontrado
-                </p>
-            </div>
-        );
+
+        return null;
+
     }
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | NORMALIZED DISPLAY DATA
+    |--------------------------------------------------------------------------
+    */
+
+    const categories = Array.isArray(project.category)
+        ? project.category
+        : project.category
+            ? [project.category]
+            : [];
+
+    const directors = Array.isArray(project.director)
+        ? project.director
+        : project.director
+            ? [project.director]
+            : [];
+
+    const producers = Array.isArray(project.producer)
+        ? project.producer
+        : project.producer
+            ? [project.producer]
+            : [];
+
+    const projectFor = Array.isArray(project.for)
+        ? project.for
+        : project.for
+            ? [project.for]
+            : [];
+
+    const images = Array.isArray(project.images)
+        ? project.images
+        : project.images
+            ? [project.images]
+            : [];
+
+
     return (
-        <section className="w-screen min-h-screen flex flex-col items-center justify-center pt-40 px-4 pb-20">
 
-            {/* =========================
+        <main className="relative min-h-screen bg-black text-white">
+
+            {/* ============================================================
                 PROJECT
-            ========================= */}
+            ============================================================ */}
 
-            {project.video && (
-                <div className="w-full max-w-5xl aspect-video mx-auto">
-                    <iframe
-                        src={project.video}
-                        className="w-full h-full"
-                        frameBorder="0"
-                        allow="autoplay; fullscreen; picture-in-picture"
-                        allowFullScreen
-                        title={project.title}
-                    />
-                </div>
-            )}
+            <section className="min-h-screen">
 
-            {/* INFORMATION */}
+                {/* VIDEO */}
 
-            <div
-                className={`text-center ${project.video ? "mt-6" : "mt-0"
-                    }`}
-            >
-                <h2 className="font-bold uppercase">
-                    “{project.title}”, DIRECTED BY{" "}
+                <div className="relative w-full h-screen">
 
-                    {Array.isArray(project.director)
-                        ? project.director.join(" & ")
-                        : project.director}
+                    {project.video && (
 
-                    {project.for && project.for.length > 0 && (
-                        <>
-                            <br />
-
-                            FOR{" "}
-
-                            {Array.isArray(project.for)
-                                ? project.for.join(", ")
-                                : project.for}
-                        </>
-                    )}
-                </h2>
-
-                <p className="mt-2">
-                    {project.year}
-                </p>
-
-                {project.description && (
-                    <p className="mt-1">
-                        {project.description}
-                    </p>
-                )}
-            </div>
-
-            {/* IMAGES */}
-
-            <div
-                className="mt-8 lg:grid md:flex gap-0 w-full md:max-w-5xl"
-                style={{
-                    gridTemplateColumns:
-                        project.images.length === 2
-                            ? "repeat(2, minmax(0, 1fr))"
-                            : project.images.length === 4
-                                ? "repeat(2, minmax(0, 1fr))"
-                                : project.images.length <= 3
-                                    ? `repeat(${project.images.length}, minmax(0, 1fr))`
-                                    : "repeat(3, minmax(0, 1fr))",
-                }}
-            >
-                {project.id !== "8" &&
-                    project.images.map((img, i) => (
-                        <img
-                            key={i}
-                            src={img}
-                            alt={`${project.title} image ${i + 1}`}
-                            className="w-full max-h-[300px] object-cover cursor-pointer hover:opacity-80 transition"
-                            onClick={() => openLightbox(i)}
+                        <iframe
+                            src={project.video}
+                            className="absolute inset-0 w-full h-full"
+                            allow="autoplay; fullscreen; picture-in-picture"
+                            allowFullScreen
                         />
-                    ))}
-            </div>
 
-            {/* ADMIN BUTTONS */}
+                    )}
+
+                </div>
+
+
+                {/* ========================================================
+                    INFO
+                ======================================================== */}
+
+                <section className="px-6 md:px-10 py-16">
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+
+                        {/* LEFT */}
+
+                        <div>
+
+                            <h1 className="uppercase text-2xl md:text-4xl">
+                                {project.title}
+                            </h1>
+
+                            {project.year && (
+
+                                <p className="uppercase text-xs mt-2">
+                                    {project.year}
+                                </p>
+
+                            )}
+
+                        </div>
+
+
+                        {/* RIGHT */}
+
+                        <div className="uppercase text-xs space-y-4">
+
+                            {projectFor.length > 0 && (
+
+                                <div>
+                                    <span className="opacity-50">
+                                        For
+                                    </span>
+
+                                    <div className="mt-1">
+                                        {projectFor.map(
+                                            (item, index) => (
+                                                <div key={index}>
+                                                    {item}
+                                                </div>
+                                            )
+                                        )}
+                                    </div>
+                                </div>
+
+                            )}
+
+
+                            {directors.length > 0 && (
+
+                                <div>
+                                    <span className="opacity-50">
+                                        Director
+                                    </span>
+
+                                    <div className="mt-1">
+                                        {directors.map(
+                                            (item, index) => (
+                                                <div key={index}>
+                                                    {item}
+                                                </div>
+                                            )
+                                        )}
+                                    </div>
+                                </div>
+
+                            )}
+
+
+                            {producers.length > 0 && (
+
+                                <div>
+                                    <span className="opacity-50">
+                                        Producer
+                                    </span>
+
+                                    <div className="mt-1">
+                                        {producers.map(
+                                            (item, index) => (
+                                                <div key={index}>
+                                                    {item}
+                                                </div>
+                                            )
+                                        )}
+                                    </div>
+                                </div>
+
+                            )}
+
+
+                            {categories.length > 0 && (
+
+                                <div>
+                                    <span className="opacity-50">
+                                        Category
+                                    </span>
+
+                                    <div className="mt-1">
+                                        {categories.map(
+                                            (item, index) => (
+                                                <div key={index}>
+                                                    {item}
+                                                </div>
+                                            )
+                                        )}
+                                    </div>
+                                </div>
+
+                            )}
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                {/* ========================================================
+                    IMAGES
+                ======================================================== */}
+
+                {project.id !== "8" &&
+                    images.length > 0 && (
+
+                        <section className="grid grid-cols-1 md:grid-cols-2">
+
+                            {images.map(
+                                (image, index) => (
+
+                                    <button
+                                        key={index}
+                                        type="button"
+                                        onClick={() =>
+                                            setSelectedImage(image)
+                                        }
+                                        className="relative w-full aspect-video overflow-hidden cursor-pointer"
+                                    >
+
+                                        <img
+                                            src={image}
+                                            alt={`${project.title} ${index + 1}`}
+                                            className="w-full h-full object-cover"
+                                        />
+
+                                    </button>
+
+                                )
+                            )}
+
+                        </section>
+
+                    )}
+
+
+            </section>
+
+
+            {/* ============================================================
+                ADMIN BUTTONS
+            ============================================================ */}
 
             {user && (
-                <div className="flex gap-4 mt-10">
+
+                <div className="fixed bottom-6 right-6 z-50 flex gap-2">
+
                     <button
                         onClick={handleEdit}
-                        className="px-6 py-3 bg-white text-black uppercase cursor-pointer"
+                        className="bg-white text-black px-5 py-3 uppercase text-xs cursor-pointer"
                     >
-                        Editar proyecto
+                        Edit
                     </button>
 
                     <button
-                        onClick={handleDelete}
-                        disabled={deleting}
-                        className="px-6 py-3 border border-white uppercase cursor-pointer disabled:opacity-50"
+                        onClick={() =>
+                            setShowDeleteConfirm(true)
+                        }
+                        className="bg-white text-black px-5 py-3 uppercase text-xs cursor-pointer"
                     >
-                        {deleting
-                            ? "Borrando..."
-                            : "Borrar proyecto"}
+                        Delete
                     </button>
+
                 </div>
+
             )}
 
-            {/* =========================
-                LIGHTBOX
-            ========================= */}
+
+            {/* ============================================================
+                IMAGE LIGHTBOX
+            ============================================================ */}
 
             <AnimatePresence>
-                {lightboxIndex !== null && (
+
+                {selectedImage && (
+
                     <motion.div
-                        className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90"
+                        className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-6 cursor-pointer"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        onClick={closeLightbox}
+                        onClick={() =>
+                            setSelectedImage(null)
+                        }
                     >
+
                         <motion.img
-                            key={project.images[lightboxIndex]}
-                            src={project.images[lightboxIndex]}
-                            className="max-h-[80vh] max-w-[90vw] object-contain"
-                            initial={{ scale: 0.8 }}
-                            animate={{ scale: 1 }}
-                            exit={{ scale: 0.8 }}
+                            src={selectedImage}
+                            alt={project.title}
+                            className="max-w-full max-h-full object-contain"
+                            initial={{
+                                scale: 0.95,
+                            }}
+                            animate={{
+                                scale: 1,
+                            }}
+                            exit={{
+                                scale: 0.95,
+                            }}
+                            transition={{
+                                duration: 0.3,
+                            }}
+                            onClick={(e) =>
+                                e.stopPropagation()
+                            }
                         />
 
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                prevImage();
-                            }}
-                            className="absolute left-4 text-white text-3xl"
-                        >
-                            ‹
-                        </button>
-
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                nextImage();
-                            }}
-                            className="absolute right-4 text-white text-3xl"
-                        >
-                            ›
-                        </button>
                     </motion.div>
+
                 )}
+
             </AnimatePresence>
 
-            {/* =========================
+
+            {/* ============================================================
                 EDIT MODAL
-            ========================= */}
+            ============================================================ */}
 
             <AnimatePresence>
-                {editing && (
-                    <>
-                        {/* BACKDROP */}
+
+                {showEdit && (
+
+                    <motion.div
+                        className="fixed inset-0 z-[90] bg-black/80 flex items-center justify-center p-6 overflow-y-auto"
+                        initial={{
+                            opacity: 0,
+                        }}
+                        animate={{
+                            opacity: 1,
+                        }}
+                        exit={{
+                            opacity: 0,
+                        }}
+                    >
 
                         <motion.div
-                            className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-md"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.4 }}
-                            onClick={handleCancel}
-                        />
-
-                        {/* MODAL */}
-
-                        <motion.div
-                            className="fixed inset-0 z-[70] flex items-center justify-center px-4 py-8 pointer-events-none"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.4 }}
+                            className="relative w-full max-w-2xl bg-white text-black p-6 md:p-10"
+                            initial={{
+                                y: 30,
+                                opacity: 0,
+                            }}
+                            animate={{
+                                y: 0,
+                                opacity: 1,
+                            }}
+                            exit={{
+                                y: 30,
+                                opacity: 0,
+                            }}
                         >
-                            <motion.form
-                                onSubmit={handleSave}
-                                onClick={(e) => e.stopPropagation()}
-                                className="
-        pointer-events-auto
-        w-[70%]
-        max-w-2xl
-        max-h-[calc(100vh-4rem)]
-        overflow-y-auto
-        bg-black
-        border
-        border-white/30
-        rounded-2xl
-        p-6
-        md:p-8
-        my-8
-    "
-                                initial={{
-                                    opacity: 0,
-                                    scale: 0.96,
-                                    y: 20,
-                                }}
-                                animate={{
-                                    opacity: 1,
-                                    scale: 1,
-                                    y: 0,
-                                }}
-                                exit={{
-                                    opacity: 0,
-                                    scale: 0.96,
-                                    y: 20,
-                                }}
-                                transition={{
-                                    duration: 0.45,
-                                    ease: [0.22, 1, 0.36, 1],
-                                }}
+
+                            {/* CLOSE */}
+
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    setShowEdit(false)
+                                }
+                                className="absolute top-4 right-4 text-xs uppercase cursor-pointer"
                             >
-                                {/* HEADER */}
+                                Close
+                            </button>
 
-                                <div className="flex justify-between items-center mb-8">
-                                    <h2 className="uppercase font-bold">
-                                        Editar proyecto
-                                    </h2>
 
-                                    <button
-                                        type="button"
-                                        onClick={handleCancel}
-                                        className="text-2xl leading-none cursor-pointer"
-                                    >
-                                        ×
-                                    </button>
+                            <h2 className="uppercase text-xl mb-8">
+                                Edit project
+                            </h2>
+
+
+                            <div className="space-y-6">
+
+                                {/* TITLE */}
+
+                                <div>
+
+                                    <label className="block uppercase text-xs mb-2">
+                                        Title
+                                    </label>
+
+                                    <input
+                                        name="title"
+                                        value={formData.title}
+                                        onChange={handleChange}
+                                        className="w-full border-b border-black py-2 outline-none"
+                                    />
+
                                 </div>
 
-                                {/* FORM */}
 
-                                <div className="flex flex-col gap-5">
+                                {/* FOR */}
 
-                                    {/* TITLE */}
+                                <div>
 
-                                    <div>
-                                        <label className="block uppercase text-xs mb-2">
-                                            Title
-                                        </label>
+                                    <label className="block uppercase text-xs mb-2">
+                                        For
+                                    </label>
 
-                                        <input
-                                            name="title"
-                                            value={formData.title}
-                                            onChange={handleChange}
-                                            className="w-full bg-transparent border border-white/40 rounded-md px-4 py-3 outline-none focus:border-white"
-                                            required
-                                        />
-                                    </div>
+                                    <input
+                                        value={formData.for.join(", ")}
+                                        onChange={(e) =>
+                                            setFormData((prev) => ({
+                                                ...prev,
+                                                for: e.target.value
+                                                    .split(",")
+                                                    .map((item) =>
+                                                        item.trim()
+                                                    )
+                                                    .filter(Boolean),
+                                            }))
+                                        }
+                                        className="w-full border-b border-black py-2 outline-none"
+                                    />
 
-
-                                    {/* FOR */}
-
-                                    <div>
-                                        <label className="block uppercase text-xs mb-2">
-                                            For
-                                        </label>
-
-                                        <input
-                                            name="for"
-                                            value={formData.for}
-                                            onChange={handleChange}
-                                            className="w-full bg-transparent border border-white/40 rounded-md px-4 py-3 outline-none focus:border-white"
-                                        />
-                                    </div>
+                                </div>
 
 
-                                    {/* DIRECTOR */}
+                                {/* DIRECTOR */}
 
-                                    <div>
-                                        <label className="block uppercase text-xs mb-2">
-                                            Director
-                                        </label>
+                                <div>
 
-                                        <input
-                                            name="director"
-                                            value={formData.director}
-                                            onChange={handleChange}
-                                            className="w-full bg-transparent border border-white/40 rounded-md px-4 py-3 outline-none focus:border-white"
-                                        />
-                                    </div>
+                                    <label className="block uppercase text-xs mb-2">
+                                        Director
+                                    </label>
 
+                                    <input
+                                        value={formData.director.join(", ")}
+                                        onChange={(e) =>
+                                            setFormData((prev) => ({
+                                                ...prev,
+                                                director: e.target.value
+                                                    .split(",")
+                                                    .map((item) =>
+                                                        item.trim()
+                                                    )
+                                                    .filter(Boolean),
+                                            }))
+                                        }
+                                        className="w-full border-b border-black py-2 outline-none"
+                                    />
 
-                                    {/* PRODUCER */}
-
-                                    <div>
-                                        <label className="block uppercase text-xs mb-2">
-                                            Producer
-                                        </label>
-
-                                        <input
-                                            name="producer"
-                                            value={formData.producer}
-                                            onChange={handleChange}
-                                            className="w-full bg-transparent border border-white/40 rounded-md px-4 py-3 outline-none focus:border-white"
-                                        />
-                                    </div>
+                                </div>
 
 
-                                    {/* YEAR */}
+                                {/* PRODUCER */}
 
-                                    <div>
-                                        <label className="block uppercase text-xs mb-2">
-                                            Year
-                                        </label>
+                                <div>
 
-                                        <input
-                                            name="year"
-                                            value={formData.year}
-                                            onChange={handleChange}
-                                            className="w-full bg-transparent border border-white/40 rounded-md px-4 py-3 outline-none focus:border-white"
-                                        />
-                                    </div>
+                                    <label className="block uppercase text-xs mb-2">
+                                        Producer
+                                    </label>
 
+                                    <input
+                                        value={formData.producer.join(", ")}
+                                        onChange={(e) =>
+                                            setFormData((prev) => ({
+                                                ...prev,
+                                                producer: e.target.value
+                                                    .split(",")
+                                                    .map((item) =>
+                                                        item.trim()
+                                                    )
+                                                    .filter(Boolean),
+                                            }))
+                                        }
+                                        className="w-full border-b border-black py-2 outline-none"
+                                    />
 
-                                    {/* CATEGORY */}
-
-                                    <div>
-                                        <label className="block uppercase text-xs mb-2">
-                                            Category
-                                        </label>
-
-                                        <input
-                                            name="category"
-                                            value={formData.category}
-                                            onChange={handleChange}
-                                            placeholder="Director, Editor, Music Video"
-                                            className="w-full bg-transparent border border-white/40 rounded-md px-4 py-3 outline-none focus:border-white"
-                                        />
-                                    </div>
+                                </div>
 
 
-                                    {/* VIDEO */}
+                                {/* YEAR */}
 
-                                    <div>
-                                        <label className="block uppercase text-xs mb-2">
-                                            Video
-                                        </label>
+                                <div>
 
-                                        <input
-                                            name="video"
-                                            value={formData.video}
-                                            onChange={handleChange}
-                                            placeholder="https://player.vimeo.com/..."
-                                            className="w-full bg-transparent border border-white/40 rounded-md px-4 py-3 outline-none focus:border-white"
-                                        />
-                                    </div>
+                                    <label className="block uppercase text-xs mb-2">
+                                        Year
+                                    </label>
+
+                                    <input
+                                        name="year"
+                                        value={formData.year}
+                                        onChange={handleChange}
+                                        className="w-full border-b border-black py-2 outline-none"
+                                    />
+
+                                </div>
 
 
-                                    {/* IMAGES */}
+                                {/* ==================================================
+                                    CATEGORY
+                                ================================================== */}
 
-                                    <div>
-                                        <div className="flex justify-between items-center mb-3">
-                                            <label className="block uppercase text-xs">
-                                                Images
+                                <div>
+
+                                    <label className="block uppercase text-xs mb-3">
+                                        Category
+                                    </label>
+
+                                    <div className="flex flex-col gap-3">
+
+                                        {[
+                                            "director",
+                                            "editor",
+                                            "commercial",
+                                            "music video",
+                                        ].map((category) => (
+
+                                            <label
+                                                key={category}
+                                                className="flex items-center gap-3 cursor-pointer uppercase text-xs"
+                                            >
+
+                                                <input
+                                                    type="checkbox"
+                                                    checked={
+                                                        formData.category.includes(
+                                                            category
+                                                        )
+                                                    }
+                                                    onChange={() =>
+                                                        handleCategoryChange(
+                                                            category
+                                                        )
+                                                    }
+                                                    className="cursor-pointer"
+                                                />
+
+                                                {category}
+
                                             </label>
 
-                                            <button
-                                                type="button"
-                                                onClick={addImage}
-                                                className="text-xs uppercase underline cursor-pointer"
-                                            >
-                                                + Añadir imagen
-                                            </button>
-                                        </div>
+                                        ))}
 
-                                        <div className="flex flex-col gap-4">
-
-                                            {(formData.images
-                                                ? formData.images.split("\n")
-                                                : [""]
-                                            ).map((image, index) => (
-
-                                                <div
-                                                    key={index}
-                                                    className="flex gap-3 items-end"
-                                                >
-                                                    <div className="flex-1">
-
-                                                        <label className="block uppercase text-[10px] mb-2 opacity-70">
-                                                            Image {index + 1}
-                                                        </label>
-
-                                                        <input
-                                                            type="text"
-                                                            value={image}
-                                                            onChange={(e) =>
-                                                                handleImageChange(
-                                                                    index,
-                                                                    e.target.value
-                                                                )
-                                                            }
-                                                            placeholder="https://..."
-                                                            className="w-full bg-transparent border border-white/40 rounded-md px-4 py-3 outline-none focus:border-white"
-                                                        />
-
-                                                    </div>
-
-                                                    {(formData.images
-                                                        ? formData.images.split("\n").length
-                                                        : 1) > 1 && (
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => removeImage(index)}
-                                                                className="h-[46px] px-3 border border-white/30 rounded-md text-lg cursor-pointer hover:border-white transition"
-                                                            >
-                                                                ×
-                                                            </button>
-                                                        )}
-                                                </div>
-
-                                            ))}
-
-                                        </div>
                                     </div>
+
+                                </div>
+
+
+                                {/* VIDEO */}
+
+                                <div>
+
+                                    <label className="block uppercase text-xs mb-2">
+                                        Video
+                                    </label>
+
+                                    <input
+                                        name="video"
+                                        value={formData.video}
+                                        onChange={handleChange}
+                                        className="w-full border-b border-black py-2 outline-none"
+                                    />
+
+                                </div>
+
+
+                                {/* IMAGES */}
+
+                                <div>
+
+                                    <label className="block uppercase text-xs mb-2">
+                                        Images
+                                    </label>
+
+                                    <textarea
+                                        value={formData.images.join("\n")}
+                                        onChange={(e) =>
+                                            setFormData((prev) => ({
+                                                ...prev,
+                                                images: e.target.value
+                                                    .split("\n")
+                                                    .map((item) =>
+                                                        item.trim()
+                                                    )
+                                                    .filter(Boolean),
+                                            }))
+                                        }
+                                        rows={5}
+                                        className="w-full border border-black p-3 outline-none resize-none"
+                                        placeholder="One image URL per line"
+                                    />
 
                                 </div>
 
 
                                 {/* ACTIONS */}
 
-                                <div className="flex gap-4 mt-8 pt-2">
+                                <div className="flex gap-3 pt-4">
+
                                     <button
-                                        type="submit"
+                                        type="button"
+                                        onClick={handleSave}
                                         disabled={saving}
-                                        className="px-6 py-3 bg-white text-black uppercase rounded-md cursor-pointer disabled:opacity-50"
+                                        className="bg-black text-white px-6 py-3 uppercase text-xs cursor-pointer disabled:opacity-50"
                                     >
-                                        {saving ? "Guardando..." : "Guardar"}
+                                        {saving
+                                            ? "Saving..."
+                                            : "Save"}
                                     </button>
 
                                     <button
                                         type="button"
-                                        onClick={handleCancel}
-                                        className="px-6 py-3 border border-white rounded-md uppercase cursor-pointer"
+                                        onClick={() =>
+                                            setShowEdit(false)
+                                        }
+                                        className="border border-black px-6 py-3 uppercase text-xs cursor-pointer"
                                     >
-                                        Cancelar
+                                        Cancel
                                     </button>
+
                                 </div>
 
-                            </motion.form>
+                            </div>
 
                         </motion.div>
-                    </>
+
+                    </motion.div>
+
                 )}
+
             </AnimatePresence>
 
-        </section>
+
+            {/* ============================================================
+                DELETE CONFIRMATION
+            ============================================================ */}
+
+            <AnimatePresence>
+
+                {showDeleteConfirm && (
+
+                    <motion.div
+                        className="fixed inset-0 z-[110] bg-black/80 flex items-center justify-center p-6"
+                        initial={{
+                            opacity: 0,
+                        }}
+                        animate={{
+                            opacity: 1,
+                        }}
+                        exit={{
+                            opacity: 0,
+                        }}
+                    >
+
+                        <motion.div
+                            className="bg-white text-black w-full max-w-md p-8"
+                            initial={{
+                                scale: 0.95,
+                                opacity: 0,
+                            }}
+                            animate={{
+                                scale: 1,
+                                opacity: 1,
+                            }}
+                            exit={{
+                                scale: 0.95,
+                                opacity: 0,
+                            }}
+                        >
+
+                            <h2 className="uppercase text-lg mb-4">
+                                Delete project
+                            </h2>
+
+                            <p className="text-sm mb-8">
+                                Are you sure you want to delete{" "}
+                                <strong>
+                                    "{project.title}"
+                                </strong>
+                                ?
+                            </p>
+
+
+                            <div className="flex gap-3">
+
+                                <button
+                                    type="button"
+                                    onClick={handleDelete}
+                                    disabled={deleting}
+                                    className="bg-black text-white px-6 py-3 uppercase text-xs cursor-pointer disabled:opacity-50"
+                                >
+                                    {deleting
+                                        ? "Deleting..."
+                                        : "Yes, delete"}
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setShowDeleteConfirm(false)
+                                    }
+                                    className="border border-black px-6 py-3 uppercase text-xs cursor-pointer"
+                                >
+                                    Cancel
+                                </button>
+
+                            </div>
+
+                        </motion.div>
+
+                    </motion.div>
+
+                )}
+
+            </AnimatePresence>
+
+        </main>
     );
 }

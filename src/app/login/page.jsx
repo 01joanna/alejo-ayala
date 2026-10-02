@@ -26,7 +26,7 @@ export default function Login() {
                 password
             );
 
-            router.push("/");
+            router.push("/admin");
         } catch (error) {
             console.error(error);
             setError("Email o contraseña incorrectos.");

@@ -37,7 +37,11 @@ export default function Work() {
             (cat) => cat?.toLowerCase() === filter
         );
     })
-    .sort((a, b) => Number(b.year) - Number(a.year));
+    .sort(
+        (a, b) =>
+            Number(a.order ?? 9999) -
+            Number(b.order ?? 9999)
+    );
 
 
     const renderFilterButtons = (group) => (

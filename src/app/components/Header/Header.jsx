@@ -1,4 +1,5 @@
 'use client';
+
 import React, { useEffect } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { useRouter, usePathname } from "next/navigation";
@@ -10,26 +11,63 @@ export default function Header({ scrollY, onAboutClick, showAbout }) {
 
     const isHome = pathname === "/";
     const isWorkPage = pathname.startsWith("/work/");
+    const isAdmin = pathname.startsWith("/admin");
 
     useEffect(() => {
         if (showAbout) {
-            controls.start({ top: "20%", y: 0, transition: { duration: 0.5 } });
+            controls.start({
+                top: "20%",
+                y: 0,
+                transition: {
+                    duration: 0.5,
+                    ease: [0.22, 1, 0.36, 1],
+                },
+            });
+        } else if (isAdmin) {
+            controls.start({
+                top: "54px",
+                y: 0,
+                transition: {
+                    duration: 0.5,
+                    ease: [0.22, 1, 0.36, 1],
+                },
+            });
         } else if (isWorkPage) {
-            controls.start({ top: "0px", y: 0, transition: { duration: 0.5 } });
+            controls.start({
+                top: "0px",
+                y: 0,
+                transition: {
+                    duration: 0.5,
+                    ease: [0.22, 1, 0.36, 1],
+                },
+            });
         } else if (isHome) {
             controls.start({
                 top: scrollY > 10 ? "0px" : "50%",
                 y: scrollY > 10 ? 0 : "-50%",
-                transition: { duration: 0.5 }
+                transition: {
+                    duration: 0.5,
+                    ease: [0.22, 1, 0.36, 1],
+                },
             });
         }
-    }, [scrollY, showAbout, isHome, isWorkPage, controls]);
+    }, [
+        scrollY,
+        showAbout,
+        isHome,
+        isWorkPage,
+        isAdmin,
+        controls,
+    ]);
 
     const handleHomeClick = () => {
         if (!isHome) {
             router.push("/");
         } else {
-            window.scrollTo({ top: 0, behavior: "smooth" });
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth",
+            });
         }
     };
 
@@ -37,28 +75,61 @@ export default function Header({ scrollY, onAboutClick, showAbout }) {
         if (!isHome) {
             router.push("/#work");
         } else {
-            document.querySelector("#work")?.scrollIntoView({ behavior: "smooth" });
+            document.querySelector("#work")?.scrollIntoView({
+                behavior: "smooth",
+            });
         }
     };
 
     return (
         <motion.header
             animate={controls}
-            initial={{ 
-                top: isHome ? "50%" : "0px", 
-                y: isHome ? "-50%" : "0" 
+            initial={{
+                top: isHome ? "50%" : "0px",
+                y: isHome ? "-50%" : "0",
             }}
-            className={`${isWorkPage ? "absolute mt-15" : "fixed"} left-0 w-full px-8 py-6 bg-transparent uppercase text-md tracking-widest text-white z-50 font-helveticaLight md:pb-30 lg:pb-0`}
+            className={`
+                ${
+                    isWorkPage
+                        ? "absolute mt-15"
+                        : "fixed"
+                }
+                left-0
+                w-full
+                px-8
+                py-6
+                bg-transparent
+                uppercase
+                text-md
+                tracking-widest
+                text-white
+                z-50
+                font-helveticaLight
+                md:pb-30
+                lg:pb-0
+            `}
         >
             <div className="max-w-7xl w-full mx-auto flex items-center justify-evenly">
-                <button className="cursor-pointer" onClick={handleWorkClick}>WORK</button>
-                <h1 
+                <button
+                    className="cursor-pointer"
+                    onClick={handleWorkClick}
+                >
+                    WORK
+                </button>
+
+                <h1
                     className="font-helveticaBold cursor-pointer tracking-widest"
                     onClick={handleHomeClick}
                 >
                     Alejo Ayala
                 </h1>
-                <button className="cursor-pointer" onClick={onAboutClick}>ABOUT</button>
+
+                <button
+                    className="cursor-pointer"
+                    onClick={onAboutClick}
+                >
+                    ABOUT
+                </button>
             </div>
         </motion.header>
     );

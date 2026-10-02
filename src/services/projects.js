@@ -97,4 +97,22 @@ export const createProject = async (project) => {
     await setDoc(projectRef, projectToCreate);
 
     return projectToCreate;
+
+    
 };
+
+// UPDATE PROJECT ORDER
+export async function updateProjectOrder(
+    projectId,
+    order
+) {
+    const projectRef = doc(
+        db,
+        "proyectos",
+        projectId
+    );
+
+    await updateDoc(projectRef, {
+        order: Number(order),
+    });
+}
