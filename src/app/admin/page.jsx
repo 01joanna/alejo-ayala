@@ -16,6 +16,7 @@ import {
 import {
     getHomeSettings,
     updateHomeVideo,
+    updateAboutDescription,
 } from "@/services/settings";
 
 import { useAuth } from "@/hooks/useAuth";
@@ -66,6 +67,16 @@ export default function AdminPage() {
     const [
         savingVideo,
         setSavingVideo,
+    ] = useState(false);
+
+    const [
+        aboutDescription,
+        setAboutDescription,
+    ] = useState("");
+
+    const [
+        savingAbout,
+        setSavingAbout,
     ] = useState(false);
 
 
@@ -138,8 +149,15 @@ export default function AdminPage() {
                     orderedProjects
                 );
 
+
                 setHomeVideo(
                     homeSettings.video ||
+                        ""
+                );
+
+
+                setAboutDescription(
+                    homeSettings.aboutDescription ||
                         ""
                 );
 
@@ -499,6 +517,38 @@ export default function AdminPage() {
 
 
     // --------------------------------
+    // SAVE ABOUT
+    // --------------------------------
+
+    const handleSaveAbout =
+        async () => {
+            try {
+                setSavingAbout(true);
+
+                await updateAboutDescription(
+                    aboutDescription
+                );
+
+                alert(
+                    "Descripción actualizada."
+                );
+
+            } catch (error) {
+                console.error(
+                    "Error updating about:",
+                    error
+                );
+
+                alert(
+                    "No se ha podido guardar la descripción."
+                );
+            } finally {
+                setSavingAbout(false);
+            }
+        };
+
+
+    // --------------------------------
     // LOADING
     // --------------------------------
 
@@ -585,7 +635,7 @@ export default function AdminPage() {
                                 disabled={
                                     deleting
                                 }
-                                className="border border-red-400/50 text-red-300 px-4 py-2 text-xs uppercase hover:border-red-300 transition cursor-pointer disabled:opacity-40"
+                                className="border border-red-400/50 text-red-300 px-4 py-2 text-xs uppercase hover:border-red-300 transition cursor-pointer"
                             >
                                 {deleting
                                     ? "Borrando..."
@@ -881,6 +931,66 @@ export default function AdminPage() {
                         {savingVideo
                             ? "Guardando..."
                             : "Guardar vídeo"}
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            {/* ========================= */}
+            {/* ABOUT */}
+            {/* ========================= */}
+
+            <section className="border-t border-white/20 pt-10 mt-10">
+
+                <div className="mb-8">
+
+                    <h2 className="text-xl uppercase">
+                        About
+                    </h2>
+
+                    <p className="text-xs opacity-50 mt-2 max-w-xl">
+                        Esta descripción se mostrará
+                        en la sección About de la página.
+                    </p>
+
+                </div>
+
+
+                <div className="max-w-4xl">
+
+                    <label className="block text-xs uppercase opacity-50 mb-2">
+                        Descripción
+                    </label>
+
+                    <textarea
+                        value={
+                            aboutDescription
+                        }
+                        onChange={(e) =>
+                            setAboutDescription(
+                                e.target.value
+                            )
+                        }
+                        rows={12}
+                        placeholder="Escribe aquí la descripción del About..."
+                        className="w-full bg-transparent border border-white/30 px-4 py-4 text-sm outline-none focus:border-white transition resize-y leading-relaxed"
+                    />
+
+
+                    <button
+                        onClick={
+                            handleSaveAbout
+                        }
+                        disabled={
+                            savingAbout
+                        }
+                        className="mt-4 bg-white text-black px-6 py-3 text-xs uppercase hover:opacity-80 transition cursor-pointer disabled:opacity-40"
+                    >
+                        {savingAbout
+                            ? "Guardando..."
+                            : "Guardar descripción"}
                     </button>
 
                 </div>

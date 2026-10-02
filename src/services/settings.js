@@ -6,31 +6,52 @@ import {
 
 import { db } from "@/lib/firebase";
 
-const homeRef = doc(
-    db,
-    "configuracion",
-    "home"
-);
 
-
+// --------------------------------
 // GET HOME SETTINGS
-export async function getHomeSettings() {
-    const snapshot = await getDoc(homeRef);
+// --------------------------------
+
+export const getHomeSettings = async () => {
+    const settingsRef = doc(
+        db,
+        "configuracion",
+        "home"
+    );
+
+    const snapshot = await getDoc(
+        settingsRef
+    );
 
     if (!snapshot.exists()) {
         return {
             video: "",
+            aboutDescription: "",
         };
     }
 
-    return snapshot.data();
-}
+    return {
+        video: snapshot.data().video || "",
+        aboutDescription:
+            snapshot.data().aboutDescription || "",
+    };
+};
 
 
+// --------------------------------
 // UPDATE HOME VIDEO
-export async function updateHomeVideo(video) {
+// --------------------------------
+
+export const updateHomeVideo = async (
+    video
+) => {
+    const settingsRef = doc(
+        db,
+        "configuracion",
+        "home"
+    );
+
     await setDoc(
-        homeRef,
+        settingsRef,
         {
             video,
         },
@@ -38,4 +59,29 @@ export async function updateHomeVideo(video) {
             merge: true,
         }
     );
-}
+};
+
+
+// --------------------------------
+// UPDATE ABOUT DESCRIPTION
+// --------------------------------
+
+export const updateAboutDescription = async (
+    aboutDescription
+) => {
+    const settingsRef = doc(
+        db,
+        "configuracion",
+        "home"
+    );
+
+    await setDoc(
+        settingsRef,
+        {
+            aboutDescription,
+        },
+        {
+            merge: true,
+        }
+    );
+};
